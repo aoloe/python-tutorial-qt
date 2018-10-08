@@ -191,12 +191,49 @@ Finally, we tell the dialog to use the layout we have defined, show it and run t
 
 ## Signals and slots
 
-Qt uses a mechanism called _signals_ to let the application react to events such as the user clicking a button. In the following example,
+Qt uses _signals_ to let the application react to events such as the user clicking a button. In the following example,
 
-- The text is the input field is shown in an alert.
-- The application quits when the button is clicked.
+- When clicking on the "Alert" button, an message pops up with the content of the input field in the dialog.
+- The application quits as soon the "Quit" button is clicked.
 
-TODO: to be redacted
+<!-- src/signals-slots.py -->
+```py
+from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QDialog, QMessageBox, QVBoxLayout
+from PySide2.QtWidgets import QPushButton, QLineEdit
+
+app = QApplication([])
+dialog = QDialog()
+
+def on_alert_clicked():
+    global text_field
+    alert = QMessageBox()
+    alert.setText(text_field.text())
+    alert.exec_()
+
+layout = QVBoxLayout()
+text_field = QLineEdit()
+alert_button = QPushButton('Alert')
+quit_button = QPushButton('Quit')
+layout.addWidget(text_field)
+layout.addWidget(alert_button)
+layout.addWidget(quit_button)
+dialog.setLayout(layout)
+
+alert_button.clicked.connect(on_alert_clicked)
+quit_button.clicked.connect(quit)
+
+dialog.show()
+app.exec_()
+```
+
+As in the previous example, we are laying out the widgets in a vertical layout.
+
+This time, we are first creating the buttons and in a second step we add them to the layout. By doing it in two steps, we have an object that we can further use in our code to set the action to be performed by the buttons.
+
+For the "Alert" button we create a `on_alert_clicked` function that reads the value of the `text_field` input field and we `connect` it to the `clicked` signal of the alert_button.
+
+Then we simply connect the click signal of the "Quit" button with the `quit` function defined by `QApplication`.
 
 ## Using objects
 
@@ -235,6 +272,7 @@ TODO: to be redacted
 - how to read a `.ui` file
 - show a simple example
 - show, how to embed the widgets examples and let it switch style.
+- http://doc.qt.io/qt-5/qtwidgets-widgets-styles-example.html
 
 TODO: to be redacted
 
