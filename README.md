@@ -26,35 +26,33 @@ The best way to create Python application that use packages and modules that don
 
 Virtual environments make it easy to enclose in a directory all dependencies of your project, without affecting the rest of the system.
 
-To create a virtual environment as a sub directory in the current directory, execute the following command
+To create a virtual environment as a sub directory of your project directory, execute the following command
 
 ```
-python3 -m venv qt-for-python-intro
+python3 -m venv venv
 ```
 
-This creates a `qt-for-python-intro` directory where you can put all your code and other files you will be creating during this tutorial (notes, ...).
+This creates a `venv` directory where you will find all the libraries you sintall with pip.
 
 Whenever you work on the code in this tutorial, you need to activate the virtual environment.  
 
 On Linux and Mac, activate the virtual environment with:
 
 ```sh
-cd qt-for-python-intro
-source bin/activate
+source venv/bin/activate
 ```  
 
 On Windows with:
 
 ```sh
-cd qt-for-python-intro
-call scripts/activate.bat
+call venv/scripts/activate.bat
 ```  
 
-When the virtual environment is active you will see the `qt-for-python-intro` prefix in your shell:
+When the virtual environment is active you will see the `venv` prefix in your shell:
 
 ![Creating the virtual environment](images/venv.png)
 
-Of course, you can pick any name you like for the virtual environment (as an example: the shorter `py-qt-intro`).
+Of course, you can pick any name you like for the virtual environment, `venv` is just a common used name.
 
 When the virtual environment is active, you can install Qt for Python locally to your project:
 
