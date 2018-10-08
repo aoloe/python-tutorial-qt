@@ -181,6 +181,8 @@ dialog.show()
 app.exec_()
 ```
 
+![Two buttons vertically stacked](images/layout.png)
+
 As in previous example, we first create an `app`, then a dialog that will contain two buttons.
 
 Since we want the buttons, to be automatically placed on top of each other, we create a layout of type [`QVBoxLayout`](https://doc.qt.io/qtforpython/PySide2/QtWidgets/QVBoxLayout.html) and add the two buttons into it.
