@@ -378,7 +378,7 @@ app.setStyle('Fusion')
 
 The available styles are: "windows" (Windows only), "windowsvista" (Windows only), "fusion", and "macintosh" (OS X only).
 
-And while we're at it: if we recreate with Qt Designer the dialog with the preview of the Qt Widgets...
+And while we're at it: if we recreate with Qt Designer the dialog demoing the Qt Widgets...
 
 ![A preview of multiple Qt Widgets](images/widgets.png)
 
