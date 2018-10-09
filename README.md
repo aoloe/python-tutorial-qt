@@ -233,13 +233,137 @@ This time, we are first creating the buttons and in a second step we add them to
 
 For the "Alert" button we create a `on_alert_clicked` function that reads the value of the `text_field` input field and we `connect` it to the `clicked` signal of the alert_button.
 
+## Encapsulating the dialog in a class
+
 Then we simply connect the click signal of the "Quit" button with the `quit` function defined by `QApplication`.
 
-## Using objects
+As we have seen in the "signals" example, as soon as the the widgets _interact_, we need them to _see_ each other. In the example above, we have done it by marking `text_field` as global.
 
-see <https://www.blog.pythonlibrary.org/2018/04/18/getting-started-with-qt-for-python/>
+A better solution is to encapsulate the dialog in a class:
 
-TODO: to be redacted
+```py
+from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QDialog, QMessageBox, QVBoxLayout
+from PySide2.QtWidgets import QPushButton, QLineEdit
+
+class Dialog(QDialog):
+    def __init__(self, parent = None):
+        super(Dialog, self).__init__(parent)
+
+        self.text_field = QLineEdit()
+        self.alert_button = QPushButton('Alert')
+        self.quit_button = QPushButton('Quit')
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.text_field)
+        layout.addWidget(self.alert_button)
+        layout.addWidget(self.quit_button)
+        self.setLayout(layout)
+
+        self.alert_button.clicked.connect(self.alert)
+        self.quit_button.clicked.connect(quit)
+
+    def alert(self):
+        alert = QMessageBox()
+        alert.setText(self.text_field.text())
+        alert.exec_()
+
+if __name__ == '__main__':
+    app = QApplication([])
+    dialog = Dialog()
+    dialog.show()
+    app.exec_()
+```
+
+Here, we create our own `Dialog` class that extends the `QDialog` provided by Qt: the code is very similar to the previous example, but now the buttons and the input fields belong to the same context and can access each other.
+
+You will have noticed that we only create the application if `__name__ = '__main__'`. Trough this cryptic condition we make sure that the application is only started when the program is directly run and not imported as a library.
+
+## Using Qt Designer
+
+If you have used other GUI frameworks in the past, you could problaby appreciate the compactness and readability of the code we have present until now. But – as you can probably guess – creating a dialog like the one we have seen in the [Qt Widgets](#the-qt-widgets) chapter will lead to a long list of _trivial_ instantiation of widgets.
+
+Here is where [Qt Designer](http://doc.qt.io/qt-5/qtdesigner-manual.html) comes to our rescue.
+
+Qt Designer is part of [Qt Creator](http://doc.qt.io/qtcreator/), the IDE for the C++ Qt. The IDE itself is not really geared towards writing Python code, but you can use Qt Designer as a standalone for creating layouts for the Python applications.
+
+In a first exemple, we create the same dialog as above:
+
+- Open Qt Designer as a standalone application and create a file with the template "Dialog without Buttons".
+- Pull two "Push Buttons" and a "Line edit" into the dialog.
+- Right click on the dialog's background and set its layout to the vertical one. 
+- Rename the widgets to `text_field`, `alert_button`, `quit_button` and set buttons labels to "Alert" and "Quit".
+- Reduce the maximum size of the buttons to 100.
+- Add a vertical spacer below the three widgets.
+- Rename the dialog to "AlertDialog" (the name in the `.ui` file cannot be the same as the name of the class you create in your code).
+- Add the signals by activating the "Signal" mode, pulling the new signals from the buttons into the background and defining the two new signals `alert()` and `quit()`.
+- Save the file as `alert-quit.ui`.
+
+[![](images/alert-quit.png)
+
+There is one step, that Qt Designer does not implement. You have to open with a text editor the `alert-quit.ui` file you have created and modify its fourth line from
+
+```xml
+ <widget class="QDialog" name="AlertDialog">
+```
+
+to 
+
+```xml
+ <widget class="Dialog" name="AlertDialog">
+```
+
+At first sight, these steps might seem a bit cumbersome. Luckily, integrating the `.ui` file in Python is pretty easy:
+
+```py
+from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QDialog, QMessageBox
+from PySide2.QtCore import QFile, Slot
+from PySide2.QtUiTools import QUiLoader
+
+class Dialog(QDialog):
+    def __init__(self, parent = None):
+        super(Dialog, self).__init__(parent)
+
+    @Slot()
+    def alert(self):
+        alert = QMessageBox()
+        alert.setText(self.text_field.text())
+        alert.exec_()
+        
+    @Slot()
+    def quit(self):
+        quit()
+
+if __name__ == '__main__':
+    app = QApplication([])
+
+    loader = QUiLoader()
+    loader.registerCustomWidget(Dialog)
+
+    ui_file = QFile('alert-quit.ui')
+    ui_file.open(QFile.ReadOnly)
+    dialog = loader.load(ui_file)
+    ui_file.close()
+
+    dialog.show()
+    app.exec_()
+```
+
+TODO:
+
+- show, how to embed the widgets examples and let it switch style.
+- http://doc.qt.io/qt-5/qtwidgets-widgets-styles-example.html
+- you can also load _partial_ widgets (to be added to your class):
+
+  ```py
+  from PySide2.QtWidgets import QApplication
+  from PySide2.QtUiTools import QUiLoader
+  app = QApplication([])
+  dialog_ui = QUiLoader().load("list-of-buttons.ui")
+  dialog_ui.show()
+  app.exec_()
+  ```
 
 ## Windows and Mac Styles
 
@@ -260,22 +384,18 @@ The available styles are: "windows" (Windows only), "windowsvista" (Windows only
 
 You can change the appearance of the widgets via _style sheets_. This is Qt's analogue of CSS.
 
-
-
 - List of all properties that can be set: <http://doc.qt.io/qt-5/stylesheet-reference.html#list-of-properties>
 - [Seventeen CSS 2.1 color names](http://www.w3.org/TR/CSS21/syndata.html#color-units) are available.
 
 TODO: to be redacted
 
-## Using Qt Designer
 
-- how to read a `.ui` file
-- show a simple example
-- show, how to embed the widgets examples and let it switch style.
-- http://doc.qt.io/qt-5/qtwidgets-widgets-styles-example.html
+## Further reading
 
-TODO: to be redacted
-
+- [Projets and tutorials for building desktop GUI applications in Python](https://www.pymadethis.com/tag/gui/)
+- [Create Simple GUI Applications: Quick, awesome applications in Python with Qt](https://github.com/mfitzp/create-simple-gui-applications/blob/master/Book.adoc) (you can [buy it here](https://www.pymadethis.com/create-simple-gui-applications/).
+- More on signals and slots: https://wiki.qt.io/Qt_for_Python_Signals_and_Slots
 ## Notes
 
 - Modify the bash prompt: `$PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$"`
+- Play button: https://openclipart.org/detail/164047/blue-play-button-pressed-down
