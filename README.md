@@ -65,7 +65,7 @@ This applies for both the pip package, the name of the library you import and th
 
 If you're using an IDE like PyCharm, by default it will create a virtual environment for each project and – in the project's configuration – gives you [an interface for adding the PySide2 module](https://www.jetbrains.com/help/pycharm/installing-uninstalling-and-upgrading-packages.html).
 
-# Create a desktop application
+## Create a desktop application
 
 Time to write your first desktop application.
 
