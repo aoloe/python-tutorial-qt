@@ -301,7 +301,7 @@ In a first exemple, we create the same dialog as above:
 
 [![](images/alert-quit.png)](images/alter-quit.webm)
 
-There is one step, that Qt Designer does not implement. You have to open with a text editor the `alert-quit.ui` file you have created and modify its fourth line from
+There is one step, that Qt Designer does not implement. You have to open the `alert-quit.ui` file with a text editor and modify its fourth line from
 
 ```xml
  <widget class="QDialog" name="AlertDialog">
