@@ -299,7 +299,7 @@ In a first exemple, we create the same dialog as above:
 - Add the signals by activating the "Signal" mode, pulling the new signals from the buttons into the background and defining the two new signals `alert()` and `quit()`.
 - Save the file as `alert-quit.ui`.
 
-[![](images/alert-quit.png)
+[![](images/alert-quit.png)](images/alter-quit.webm)
 
 There is one step, that Qt Designer does not implement. You have to open with a text editor the `alert-quit.ui` file you have created and modify its fourth line from
 
