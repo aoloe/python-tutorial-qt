@@ -46,7 +46,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_3">
        <property name="title">
-        <string>Gropu 3</string>
+        <string>Group 3</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -190,7 +190,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
-        <string>group 2</string>
+        <string>Group 2</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
