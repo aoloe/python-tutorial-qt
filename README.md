@@ -299,7 +299,7 @@ In a first exemple, we create the same dialog as above:
 - Add the signals by activating the "Signal" mode, pulling the new signals from the buttons into the background and defining the two new signals `alert()` and `quit()`.
 - Save the file as `alert-quit.ui`.
 
-[![](images/alert-quit.png)](images/alter-quit.webm)
+[![](images/alert-quit.png)](https://raw.githubusercontent.com/aoloe/python-tutorial-qt/master/images/alert-quit.webm)
 
 There is one step, that Qt Designer does not implement. You have to open the `alert-quit.ui` file with a text editor and modify its fourth line from
 
@@ -341,12 +341,9 @@ if __name__ == '__main__':
     loader = QUiLoader()
     loader.registerCustomWidget(Dialog)
 
-    ui_file = QFile('alert-quit.ui')
-    ui_file.open(QFile.ReadOnly)
-    dialog = loader.load(ui_file)
-    ui_file.close()
-
+    dialog = loader.load('alert-quit.ui')
     dialog.show()
+
     app.exec_()
 ```
 

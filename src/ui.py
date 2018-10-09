@@ -24,10 +24,7 @@ if __name__ == '__main__':
     loader = QUiLoader()
     loader.registerCustomWidget(Dialog)
 
-    ui_file = QFile('alert-quit.ui')
-    ui_file.open(QFile.ReadOnly)
-    dialog = loader.load(ui_file)
-    ui_file.close()
-
+    dialog = loader.load('alert-quit.ui')
     dialog.show()
+
     app.exec_()
