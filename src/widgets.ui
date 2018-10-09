@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>WidgetsDialog</class>
+ <widget class="Dialog" name="WidgetsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -27,7 +27,7 @@
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QTableView" name="tableView"/>
+          <widget class="QTableWidget" name="tableWidget"/>
          </item>
         </layout>
        </widget>
@@ -80,43 +80,6 @@
          </widget>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
-          <item row="1" column="0">
-           <widget class="QSlider" name="horizontalSlider">
-            <property name="value">
-             <number>20</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QScrollBar" name="horizontalScrollBar">
-            <property name="value">
-             <number>60</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" rowspan="2">
-           <widget class="QDial" name="dial">
-            <property name="maximumSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -146,8 +109,8 @@
            <widget class="QDial" name="dial_2">
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>30</width>
+              <height>30</height>
              </size>
             </property>
            </widget>
@@ -293,7 +256,10 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>TextLabel</string>
+        <string>&amp;Style</string>
+       </property>
+       <property name="buddy">
+        <cstring>comboBox</cstring>
        </property>
       </widget>
      </item>
@@ -301,12 +267,7 @@
       <widget class="QComboBox" name="comboBox">
        <item>
         <property name="text">
-         <string>Combo Box</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Second Item</string>
+         <string/>
         </property>
        </item>
       </widget>
@@ -314,7 +275,7 @@
      <item>
       <widget class="QCheckBox" name="checkBox_2">
        <property name="text">
-        <string>Checked</string>
+        <string>&amp;Checked</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -324,7 +285,7 @@
      <item>
       <widget class="QCheckBox" name="checkBox_3">
        <property name="text">
-        <string>Not checked</string>
+        <string>&amp;Not checked</string>
        </property>
       </widget>
      </item>
@@ -332,6 +293,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Dialog</class>
+   <extends>QWidget</extends>
+   <header>dialog.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

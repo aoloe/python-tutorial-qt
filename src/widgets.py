@@ -8,16 +8,15 @@ class Dialog(QDialog):
     def __init__(self, parent = None):
         super(Dialog, self).__init__(parent)
 
-    @Slot()
-    def alert(self):
-        alert = QMessageBox()
-        alert.setText(self.text_field.text())
-        alert.exec_()
-
-    @Slot()
-    def quit(self):
-        quit()
-        
+    def setup(self):
+        for s in ['fusion', 'macintosh', 'windows', 'windowsvista']:
+            self.comboBox.addItem(s)
+        self.comboBox.currentIndexChanged.connect(self.setStyle)
+        for r in range(0, 4):
+            self.tableWidget.insertRow(0)
+            self.tableWidget.insertColumn(0)
+    def setStyle(self) :
+        app.setStyle(self.comboBox.currentText())
 
 if __name__ == '__main__':
     app = QApplication([])
@@ -26,7 +25,8 @@ if __name__ == '__main__':
     loader.registerCustomWidget(Dialog)
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
-    dialog = loader.load(os.path.join(base_dir, 'alert-quit.ui'))
+    dialog = loader.load(os.path.join(base_dir, 'widgets.ui'))
+    dialog.setup()
     dialog.show()
 
     app.exec_()

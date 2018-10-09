@@ -133,7 +133,7 @@ Widgets are often nested: for example, a dialog can contain a button, which in t
 
 This screenshot shows the most common Qt widgets:
 
-![](images/widgets.png)
+![A preview of multiple Qt Widgets](images/widgets.png)
 
 Top-to-bottom, left-to-right, they are:
 
@@ -341,7 +341,8 @@ if __name__ == '__main__':
     loader = QUiLoader()
     loader.registerCustomWidget(Dialog)
 
-    dialog = loader.load('alert-quit.ui')
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    dialog = loader.load(os.path.join(base_dir, 'alert-quit.ui'))
     dialog.show()
 
     app.exec_()
