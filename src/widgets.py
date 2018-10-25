@@ -25,7 +25,10 @@ if __name__ == '__main__':
     loader.registerCustomWidget(Dialog)
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
-    dialog = loader.load(os.path.join(base_dir, 'widgets.ui'))
+    ui_file = QFile('widgets.ui')
+    ui_file = QFile(os.path.join(base_dir, 'widgets.ui'))
+    #dialog = loader.load(os.path.join(base_dir, 'widgets.ui'))
+    dialog = loader.load(ui_file)
     dialog.setup()
     dialog.show()
 

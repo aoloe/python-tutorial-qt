@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QPushButton, QLineEdit
 
 class Dialog(QDialog):
     def __init__(self, parent = None):
-        super(Dialog, self).__init__(parent)
+        super(Dialog, self).__init__()
 
         self.text_field = QLineEdit()
         self.alert_button = QPushButton('Alert')

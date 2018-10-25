@@ -40,13 +40,13 @@ On Linux and Mac, activate the virtual environment with:
 
 ```sh
 source venv/bin/activate
-```  
+```
 
 On Windows with:
 
 ```sh
 call venv/scripts/activate.bat
-```  
+```
 
 When the virtual environment is active you will see the `venv` prefix in your shell:
 
@@ -58,7 +58,7 @@ When the virtual environment is active, you can install Qt for Python locally to
 
 ```sh
 pip install PySide2
-```  
+```
 
 As mentioned in the introduction, while the official name is "Qt for Python", currently you still mostly have to use the old name: PySide2.  
 This applies for both the pip package, the name of the library you import and the search keywords, when you're looking for help.
@@ -291,7 +291,7 @@ In a first exemple, we create the same dialog as above:
 
 - Open Qt Designer as a standalone application and create a file with the template "Dialog without Buttons".
 - Pull two "Push Buttons" and a "Line edit" into the dialog.
-- Right click on the dialog's background and set its layout to the vertical one. 
+- Right click on the dialog's background and set its layout to the vertical one.
 - Rename the widgets to `text_field`, `alert_button`, `quit_button` and set buttons labels to "Alert" and "Quit".
 - Reduce the maximum size of the buttons to 100.
 - Add a vertical spacer below the three widgets.
@@ -307,7 +307,7 @@ There is one step, that Qt Designer does not implement. You have to open the `al
  <widget class="QDialog" name="AlertDialog">
 ```
 
-to 
+to
 
 ```xml
  <widget class="Dialog" name="AlertDialog">
@@ -330,7 +330,7 @@ class Dialog(QDialog):
         alert = QMessageBox()
         alert.setText(self.text_field.text())
         alert.exec_()
-        
+
     @Slot()
     def quit(self):
         quit()
@@ -362,6 +362,94 @@ TODO:
   dialog_ui.show()
   app.exec_()
   ```
+
+- the official page: <https://wiki.qt.io/Qt_for_Python_UiFiles>
+- have a look at: <https://stackoverflow.com/questions/4442286/python-code-generation-with-pyside-uic>
+- when directly loading an `.ui` file, it seems impossible to get all the files in a package.
+
+## Using pyside-uic
+
+Up to the need for the small manual editing in the `.ui` file, using `QUILoader` is a good solution. Sadly, it produces code that is not compatible with most packagers. If you want to distribute your program to other people who simply want to click on an executable, you should prefer the _older_ external pre-processing of the `.ui` file.
+
+With the `pyside2-uic` tool (automatically installed with PySide2), you can convert the `.ui` file in a Python module:
+
+```sh
+$ pyside2-uic -o ui_alert_quit.py alert-quit-uic.ui
+```
+
+Now, you can import the dialog as you would do with any other module:
+
+
+<!-- `src/uic.py` -->
+```py
+from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QDialog, QMessageBox
+from PySide2.QtCore import Slot
+
+from ui_alert_quit import Ui_AlertDialog
+
+class Dialog(QDialog, Ui_AlertDialog):
+    def __init__(self, parent = None):
+        super(Dialog, self).__init__()
+        self.setupUi(self)
+        self.text_field.setText("Hey!")
+
+    @Slot()
+    def alert(self):
+        alert = QMessageBox()
+        alert.setText(self.text_field.text())
+        alert.exec_()
+
+    @Slot()
+    def quit(self):
+        QApplication.quit()
+
+
+if __name__ == '__main__':
+    app = QApplication([])
+
+    dialog = Dialog()
+    dialog.show()
+
+    app.exec_()
+```
+
+- the manual for pyqt5: http://pyqt.sourceforge.net/Docs/PyQt5/designer.html
+
+
+## Resources
+
+"If you want to find things, indipendently of where they are in the filesystem"
+
+https://github.com/telegramdesktop/dependencies_windows/blob/master/qt5_6_2/qtbase/doc/src/snippets/quiloader/mywidget.qrc
+
+```xml
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/forms">
+    <file>myform.ui</file>
+</qresource>
+</RCC>
+```
+
+```xml
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/copy.png</file>
+    <file>images/cut.png</file>
+    <file>images/new.png</file>
+    <file>images/open.png</file>
+    <file>images/paste.png</file>
+    <file>images/save.png</file>
+</qresource>
+</RCC>
+```
+
+that's the missing file in <https://doc.qt.io/qtforpython/overviews/resources.html>
+
+- ./lib/python3.6/site-packages/PySide2/pyside2-rcc
+- https://doc.qt.io/qtforpython/overviews/resources.html
+- `import ui.myResources as myResources_rc`
+- https://doc.qt.io/qtforpython/PySide2/QtCore/QResource.html#PySide2.QtCore.QResource
 
 ## Windows and Mac Styles
 
@@ -419,6 +507,10 @@ if __name__ == '__main__':
     app.exec_()
 ```
 
+## QML
+
+?
+
 ## Style sheets
 
 You can change the appearance of the widgets via _style sheets_. This is Qt's analogue of CSS.
@@ -428,6 +520,116 @@ You can change the appearance of the widgets via _style sheets_. This is Qt's an
 
 TODO: to be redacted
 
+## Creating an executable that can be distributed
+
+If you want to distribute your programs written with Python and PySide, each user will have to install all the dependencies.
+
+### fbs
+
+- https://build-system.fman.io/
+- pip install fbs PyInstaller==3.3.1
+
+### PyInstaller
+
+```sh
+pip install pyinstaller
+pyinstaller main.py
+```
+
+- Supports Linux, Mac, and Windows but is not a cross-compiler.
+- https://pyinstaller.readthedocs.io/en/stable/
+- PyInstaller is GPL but can be used to package application under any license.
+
+```py
+$ pyinstaller --onefile --windowed widgets.py
+```
+
+does work but:
+
+- you have to explicitely import `PySide2.QtXml` by editing the `widgets.spec` file created by `pyinstaller` on its first run and
+- you have to copy `widgets.ui` next to the executable.
+
+You can add both options in the command line:
+
+```sh
+$ --hidden-import "PySide2.QtXml" --add-data "widgets.ui:."
+```
+
+or by editing the `widgets.spec` file:
+
+```
+datas=[('widgets.ui', '.')],
+hiddenimports=['PySide2.QtXml'],
+```
+
+This works for `QtXml`, but the `ui` file still cannot be found.
+- it does not work with a relative path either.
+- the script using the ui converted through `pyside2-uic` seems to be correctly packaged.
+
+
+### Nuitka
+
+```sh
+pip install nuitka
+```
+
+```
+python -m nuitka --standalone --follow-imports main.py
+```
+
+or (at least for windows)
+
+```
+python -m nuitka --recurse-all --portable main.py
+```
+
+- http://nuitka.net/
+- Supports Linux, Mac, and Windows but is not a cross-compiler.
+- status of the tests
+
+## Even another alternative: pylibui
+
+
+
+[pylibui](https://github.com/joaoventura/pylibui), Python bindings for [libui](https://github.com/andlabs/libui)
+
+get and compile libui
+
+```sh
+$ git clone https://github.com/andlabs/libui/
+$ cd libui
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
+Get pylibui
+
+```sh
+$ git clone https://github.com/joaoventura/pylibui
+```
+
+Copy the pylibui directory inside of your project.
+
+Copy the content of the libui's `build/out` directory into the pylibui shared libraries:
+
+```sh
+$ mkdir pylibui/libui/sharedlibs/
+$ cp out/* pylibui/libui/sharedlibs/
+```
+
+Does not work with pyinstaller:
+
+```sh
+$ pyinstaller --onefile --windowed hello-world-libui.py
+```
+
+nor
+
+```sh
+$ pyinstaller --onefile --add-binary=pylibui/libui/sharedlibs/libui.so --windowed hello-world-libui.py
+```
 
 ## Further reading
 
@@ -436,5 +638,10 @@ TODO: to be redacted
 - More on signals and slots: https://wiki.qt.io/Qt_for_Python_Signals_and_Slots
 ## Notes
 
+- https://news.ycombinator.com/item?id=18067684
 - Modify the bash prompt: `$PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$"`
 - Play button: https://openclipart.org/detail/164047/blue-play-button-pressed-down
+- loading qrc files (resources)
+  - for now i've not found any way to do it.
+  - https://techartjourney.wordpress.com/2018/05/12/pyside2-compile-resource-file-qrc-for-maya-2018/
+  - https://www.ics.com/blog/we-ported-qt-app-c-python-heres-what-happened

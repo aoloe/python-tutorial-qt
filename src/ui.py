@@ -6,7 +6,7 @@ from PySide2.QtUiTools import QUiLoader
 
 class Dialog(QDialog):
     def __init__(self, parent = None):
-        super(Dialog, self).__init__(parent)
+        super(Dialog, self).__init__()
 
     @Slot()
     def alert(self):
